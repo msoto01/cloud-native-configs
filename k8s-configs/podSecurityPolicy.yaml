@@ -1,0 +1,54 @@
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+    name: MultiIssues
+spec:
+    privileged: true
+    allowPrivilegeEscalation: true
+    defaultAllowPrivilegeEscalation: true
+    hostPID: true
+    hostIPC: true
+    hostNetwork: true
+    runAsUser:
+        rule: RunAsAny
+    allowedCapabilities: 
+        - ALL
+    requiredDropCapabilities: 
+        - 'SYS_ADMIN'
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+    name: runAsUser
+spec:
+    requiredDropCapabilities: 
+        - ALL
+    runAsUser:
+        rule: MustRunAs
+        ranges:
+            - min: 0
+              max: 0
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+    name: allowedCapabilitiesIsNotEmpty
+spec:
+    allowedCapabilities: 
+        - SYS_ADMIN
+---
+# DOC ID = 17 : secured settings - should not give any result
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+    name: AllGood
+spec:
+    privileged: false
+    allowPrivilegeEscalation: false
+    defaultAllowPrivilegeEscalation: false
+    requiredDropCapabilities: 
+        - ALL
+    hostPID: false
+    hostIPC: false
+    hostNetwork: false
